@@ -1,0 +1,44 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/itemPlus"
+        android:icon="@drawable/ic_action_new"
+        android:showAsAction="always"
+        android:title="Plus">
+    </item>
+    <item
+        android:id="@+id/itemExecute"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="always"
+        android:title="Execute">
+    </item>
+    <item
+        android:id="@+id/itemCancel"
+        android:icon="@drawable/ic_action_cancel"
+        android:showAsAction="always"
+        android:title="Cancel">
+    </item>
+    <item
+        android:id="@+id/itemSearch"
+        android:icon="@drawable/ic_action_search"
+        android:showAsAction="always"
+        android:title="Search">
+    </item>
+    <item android:id="@+id/itemAutoScroll" android:title="AutoScroll"></item><item
+        android:id="@+id/itemFullScreen"
+        android:visible="true" android:title="Full Screen" android:checked="false" android:checkable="true">
+    </item>
+    <item
+        android:id="@+id/itemReverse"
+        android:checkable="true"
+        android:checked="false"
+        android:title="Reverse Mode">
+    </item>
+    <item
+        android:id="@+id/itemSettings"
+        android:icon="@drawable/ic_action_settings"
+        android:title="Settings">
+    </item>
+    
+
+</menu>

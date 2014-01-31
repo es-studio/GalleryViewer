@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Settings" >
+
+    <!-- You can place more preferences here that will be shown on the next screen. -->
+
+    <PreferenceCategory
+        android:shouldDisableView="true"
+        android:title="URL Settings" >
+        <EditTextPreference
+            android:defaultValue="http://m.dcinside.com/view.php?id=$NAME&amp;no="
+            android:key="pURL"
+            android:summary="Default URL for Connect"
+            android:title="URL" />
+        <EditTextPreference
+            android:defaultValue="tayeon_new1"
+            android:key="pName"
+            android:summary="Sub-Category Name"
+            android:title="Name" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Favorite" >
+        <EditTextPreference
+            android:key="pKeyword"
+            android:summary="Essential Contents Filter"
+            android:title="Keyword Filter" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Worker Settings" >
+        <EditTextPreference
+            android:defaultValue="4"
+            android:key="pMaxWorker"
+            android:numeric="integer"
+            android:summary="Maximum Worker Thread"
+            android:title="Max Worker" />
+        <EditTextPreference
+            android:defaultValue="50"
+            android:key="pLimit"
+            android:numeric="integer"
+            android:summary="Max Count of Limitation"
+            android:title="Limit" />
+
+        <CheckBoxPreference
+            android:key="pImageOnly"
+            android:summary="Image Include Contents or Not"
+            android:title="Image Only" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Display" >
+        <EditTextPreference
+            android:defaultValue="4"
+            android:key="pColumn"
+            android:numeric="integer"
+            android:summary="Number of Column Image"
+            android:title="Column" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Auto Scroll" >
+        <ListPreference android:dialogTitle="Scroll Speed" android:title="Scroll Speed" android:entryValues="@array/ScrollSpeed" android:entries="@array/ScrollSpeed" android:summary="Control Auto Scroll Speed" android:defaultValue="3" android:key="pScrollSpeed"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Cache" >
+        <Preference
+            android:key="clear_cache"
+            android:summary="Clear All Image Caches"
+            android:title="Clear Cache" />
+        <Preference
+            android:summary="Select Another Directory"
+            android:title="Cache Directory" />
+        <Preference
+            android:summary="Adjust Cache Image Size"
+            android:title="Cache Image Size" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Information" >
+        <Preference
+            android:key="pReset"
+            android:summary="Preferences Reset"
+            android:title="Reset" />
+        <Preference
+            android:key="pAbout"
+            android:summary="Fast Image Browsing for DC"
+            android:title="About..." />
+    </PreferenceCategory>
+
+</PreferenceScreen>
