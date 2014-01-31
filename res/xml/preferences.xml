@@ -44,16 +44,24 @@
             android:title="Image Only" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Display" >
-        <EditTextPreference
-            android:defaultValue="4"
+        <ListPreference
+            android:defaultValue="3"
+            android:dialogTitle="Column"
+            android:entries="@array/Column"
+            android:entryValues="@array/Column"
             android:key="pColumn"
-            android:numeric="integer"
             android:summary="Number of Column Image"
             android:title="Column" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Auto Scroll" >
-        <ListPreference android:dialogTitle="Scroll Speed" android:title="Scroll Speed" android:entryValues="@array/ScrollSpeed" android:entries="@array/ScrollSpeed" android:summary="Control Auto Scroll Speed" android:defaultValue="3" android:key="pScrollSpeed"/>
-
+        <ListPreference
+            android:defaultValue="3"
+            android:dialogTitle="Scroll Speed"
+            android:entries="@array/ScrollSpeed"
+            android:entryValues="@array/ScrollSpeed"
+            android:key="pScrollSpeed"
+            android:summary="Control Auto Scroll Speed"
+            android:title="Scroll Speed" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Cache" >
         <Preference

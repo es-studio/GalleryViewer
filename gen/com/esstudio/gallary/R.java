@@ -12,6 +12,7 @@ public final class R {
         public static final int fadein=0x7f040000;
     }
     public static final class array {
+        public static final int Column=0x7f080001;
         public static final int ScrollSpeed=0x7f080000;
     }
     public static final class attr {
@@ -41,35 +42,42 @@ public final class R {
         public static final int textview_states=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f0b000c;
+        public static final int LinearLayout1=0x7f0b0007;
+        public static final int action_settings=0x7f0b0012;
+        public static final int button1=0x7f0b000c;
+        public static final int button2=0x7f0b000d;
         public static final int content_frame=0x7f0b0001;
         public static final int custom_dialog=0x7f0b0004;
-        public static final int drawerView=0x7f0b0007;
+        public static final int drawerView=0x7f0b000e;
         public static final int drawer_layout=0x7f0b0000;
+        public static final int editText1=0x7f0b000b;
         public static final int gridView1=0x7f0b0002;
-        public static final int itemAutoScroll=0x7f0b0011;
-        public static final int itemCancel=0x7f0b000f;
-        public static final int itemExecute=0x7f0b000e;
-        public static final int itemFullScreen=0x7f0b0012;
-        public static final int itemPlus=0x7f0b000d;
-        public static final int itemReverse=0x7f0b0013;
-        public static final int itemSearch=0x7f0b0010;
-        public static final int itemSettings=0x7f0b0014;
+        public static final int itemAutoScroll=0x7f0b0017;
+        public static final int itemCancel=0x7f0b0015;
+        public static final int itemExecute=0x7f0b0014;
+        public static final int itemFullScreen=0x7f0b0018;
+        public static final int itemPlus=0x7f0b0013;
+        public static final int itemReverse=0x7f0b0019;
+        public static final int itemSearch=0x7f0b0016;
+        public static final int itemSettings=0x7f0b001a;
         public static final int left_drawer=0x7f0b0003;
         public static final int open_image=0x7f0b0006;
         public static final int open_url=0x7f0b0005;
-        public static final int search_query=0x7f0b000b;
-        public static final int section_label=0x7f0b000a;
+        public static final int radioButton1=0x7f0b0009;
+        public static final int radioButton2=0x7f0b000a;
+        public static final int search_query=0x7f0b0011;
+        public static final int section_label=0x7f0b0010;
         public static final int textView1=0x7f0b0008;
-        public static final int textView2=0x7f0b0009;
+        public static final int textView2=0x7f0b000f;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int dialog=0x7f030001;
-        public static final int drawer_list_item=0x7f030002;
-        public static final int edittext_layout=0x7f030003;
-        public static final int fragment_main_dummy=0x7f030004;
-        public static final int search=0x7f030005;
+        public static final int dialog_search_method=0x7f030002;
+        public static final int drawer_list_item=0x7f030003;
+        public static final int edittext_layout=0x7f030004;
+        public static final int fragment_main_dummy=0x7f030005;
+        public static final int search=0x7f030006;
     }
     public static final class menu {
         public static final int gallery_chooser=0x7f0a0000;
