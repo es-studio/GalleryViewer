@@ -77,6 +77,10 @@ import android.widget.ToggleButton;
 import com.esstudio.gallary.R.menu;
 import com.fedorvlasov.lazylist.ImageLoader;
 import com.fedorvlasov.lazylist.Utils;
+import com.handmark.pulltorefresh.library.ILoadingLayout;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 
 public class MainActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
@@ -109,6 +113,7 @@ public class MainActivity extends Activity implements
 	private ThreadTest[] mProcess;
 	private GridView gridView;
 	private Menu mMenu;
+	private PullToRefreshGridView mPullToRefreshGridView;
 
 	// Navigation drawer
 	private ListView mNavList;
@@ -323,7 +328,15 @@ public class MainActivity extends Activity implements
 	}
 
 	public void initGridView() {
-		gridView = (GridView) findViewById(R.id.gridView1);
+		// gridView = (GridView) findViewById(R.id.gridView1);
+		mPullToRefreshGridView = (PullToRefreshGridView) findViewById(R.id.pull_refresh_grid);
+		ILoadingLayout layout = mPullToRefreshGridView.getLoadingLayoutProxy();
+		layout.setPullLabel("Getting Contents");
+		layout.setReleaseLabel("Release To Get Contents");
+		layout.setRefreshingLabel("Loading Contents...");
+//		layout.setLastUpdatedLabel("");
+		gridView = mPullToRefreshGridView.getRefreshableView();
+
 		gridView.setAdapter(new ImageAdaptor(context, mItems));
 		gridView.setNumColumns(mColumn);
 		gridView.setScrollbarFadingEnabled(true);
@@ -336,27 +349,58 @@ public class MainActivity extends Activity implements
 		gridView.setPadding(space, 0, space, 0);
 
 		gridView.setGravity(Gravity.CENTER);
-		gridView.setOnScrollListener(new OnScrollListener() {
-			int myLastVisiblePos = gridView.getFirstVisiblePosition();
 
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// TODO Auto-generated method stub
-
-				if (view.getLastVisiblePosition() == (mItems.size() - 1)) {
-					log.out("bottom!");
-					nextImageScrap();
-				}
-				myLastVisiblePos = view.getLastVisiblePosition();
-			}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-			}
-		});
+		/**
+		 * Old GridView Method
+		 */
+		// gridView.setOnScrollListener(new OnScrollListener() {
+		// int myLastVisiblePos = gridView.getFirstVisiblePosition();
+		//
+		// @Override
+		// public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// // TODO Auto-generated method stub
+		//
+		// if (view.getLastVisiblePosition() == (mItems.size() - 1)) {
+		// log.out("bottom!");
+		// nextImageScrap();
+		// }
+		// myLastVisiblePos = view.getLastVisiblePosition();
+		// }
+		//
+		// @Override
+		// public void onScroll(AbsListView view, int firstVisibleItem,
+		// int visibleItemCount, int totalItemCount) {
+		// }
+		// });
 
 		gridView.setOnItemClickListener(new ImageClickListener(context, mItems));
+
+		mPullToRefreshGridView
+				.setOnRefreshListener(new OnRefreshListener2<GridView>() {
+
+					int myLastVisiblePos = gridView.getFirstVisiblePosition();
+
+					@Override
+					public void onPullDownToRefresh(
+							PullToRefreshBase<GridView> refreshView) {
+						showToast("Pull Down!");
+						mPullToRefreshGridView.onRefreshComplete();
+					}
+
+					@Override
+					public void onPullUpToRefresh(
+							PullToRefreshBase<GridView> refreshView) {
+						showToast("Pull Up!");
+
+						if (gridView.getLastVisiblePosition() == (mItems.size() - 1)) {
+							log.out("bottom!");
+							nextImageScrap();
+						}
+						myLastVisiblePos = gridView.getLastVisiblePosition();
+
+						mPullToRefreshGridView.onRefreshComplete();
+					}
+				});
 
 	}
 

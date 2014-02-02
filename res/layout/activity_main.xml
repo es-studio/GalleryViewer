@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+        <!--
         <GridView
             android:id="@+id/gridView1"
             android:layout_width="match_parent"
@@ -15,8 +16,18 @@
             android:horizontalSpacing="0dp"
             android:numColumns="3"
             android:scrollbars="horizontal"
-            android:verticalSpacing="0dp" >
-        </GridView>
+            android:verticalSpacing="0dp" />
+        -->
+
+        <com.handmark.pulltorefresh.library.PullToRefreshGridView
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pull_refresh_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="1dp"
+            android:numColumns="3"
+            android:verticalSpacing="0dp"
+            ptr:ptrMode="both" />
     </FrameLayout>
 
     <ListView
