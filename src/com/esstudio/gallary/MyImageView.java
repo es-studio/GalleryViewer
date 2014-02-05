@@ -75,10 +75,10 @@ public class MyImageView extends ImageView
 
         //        this.setOnClickListener(this);
         //        this.setOnLongClickListener(this);
-        ani = AnimationUtils.loadAnimation(MainActivity.getInstance()
-            .getContext(), android.R.anim.fade_in);
-        setAnimation(ani);
-        ani.setFillEnabled(true);
+//        ani = AnimationUtils.loadAnimation(MainActivity.getInstance()
+//            .getContext(), android.R.anim.fade_in);
+////        setAnimation(ani);
+//        ani.setFillEnabled(true);
 
         this.p = new Paint();
         p.setTextSize(Calc.getDP(context, fontSize));
@@ -92,6 +92,7 @@ public class MyImageView extends ImageView
         this.r = new Rect();
         pp.setColor(Color.BLACK);
         pp.setAlpha(100);
+        log.out("--------------- creating ------------");
 
     }
 
@@ -101,10 +102,10 @@ public class MyImageView extends ImageView
 
     public void startAnimation() {
 
-        ani = AnimationUtils.loadAnimation(MainActivity.getInstance()
-            .getContext(), android.R.anim.fade_in);
-        ani.setFillEnabled(true);
-        startAnimation(ani);
+//        ani = AnimationUtils.loadAnimation(MainActivity.getInstance()
+//            .getContext(), android.R.anim.fade_in);
+//        ani.setFillEnabled(true);
+//        startAnimation(ani);
     }
 
     @Override

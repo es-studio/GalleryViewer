@@ -239,6 +239,7 @@ public class ThreadTest extends AsyncTask<Object, String, Void> {
 		super.onProgressUpdate(values);
 		ImageAdaptor adt = (ImageAdaptor) mGview.getAdapter();
 		adt.notifyDataSetChanged();
+//		adt.notifyDataSetInvalidated();
 
 		MainActivity.getInstance().getActionBar().setSubtitle(values[0]);
 

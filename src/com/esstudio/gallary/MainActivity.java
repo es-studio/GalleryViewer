@@ -1,6 +1,7 @@
 package com.esstudio.gallary;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
@@ -81,6 +83,10 @@ import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class MainActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
@@ -110,6 +116,9 @@ public class MainActivity extends Activity implements
 
 	// General components
 	private ImageLoader mLoader;
+	private com.nostra13.universalimageloader.core.ImageLoader mUnvLoader = com.nostra13.universalimageloader.core.ImageLoader
+			.getInstance();
+	private DisplayImageOptions options;
 	private ThreadTest[] mProcess;
 	private GridView gridView;
 	private Menu mMenu;
@@ -203,6 +212,34 @@ public class MainActivity extends Activity implements
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+				// .showImageOnLoading(R.drawable.ic_action_play)
+				// .showImageForEmptyUri(R.drawable.ic_action_search)
+				// .showImageOnFail(R.drawable.ic_action_cancel)
+				.resetViewBeforeLoading(true)
+				.cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
+//				.displayer(new FadeInBitmapDisplayer(1000))
+				.bitmapConfig(Bitmap.Config.RGB_565).build();
+
+		File cacheDir = new File(
+				android.os.Environment.getExternalStorageDirectory(),
+				"GalleryViewer/cache/");
+
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+				this).threadPoolSize(3).threadPriority(Thread.MIN_PRIORITY + 3)
+				.denyCacheImageMultipleSizesInMemory()
+
+				// .memoryCache(new UsingFreqLimitedCache(2000000)) // You can
+				// pass your own memory cache implementation
+				.discCache(new UnlimitedDiscCache(cacheDir)) // You can pass
+																// your own disc
+																// cache
+																// implementation
+				.defaultDisplayImageOptions(options).build();
+
+		mUnvLoader.init(config);
+
 		setContentView(R.layout.activity_main);
 
 		context = getApplicationContext();
@@ -334,7 +371,7 @@ public class MainActivity extends Activity implements
 		layout.setPullLabel("Getting Contents");
 		layout.setReleaseLabel("Release To Get Contents");
 		layout.setRefreshingLabel("Loading Contents...");
-//		layout.setLastUpdatedLabel("");
+		// layout.setLastUpdatedLabel("");
 		gridView = mPullToRefreshGridView.getRefreshableView();
 
 		gridView.setAdapter(new ImageAdaptor(context, mItems));
@@ -1093,6 +1130,14 @@ public class MainActivity extends Activity implements
 	 * 
 	 * @return
 	 */
+
+	public com.nostra13.universalimageloader.core.ImageLoader getUnvLoader() {
+		return this.mUnvLoader;
+	}
+
+	public DisplayImageOptions getUnvOptions() {
+		return this.options;
+	}
 
 	public String getGalleyName() {
 		return mName;

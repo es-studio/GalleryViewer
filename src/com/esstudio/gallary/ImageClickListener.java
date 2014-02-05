@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.fedorvlasov.lazylist.Utils;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -74,7 +75,8 @@ public class ImageClickListener implements OnItemClickListener {
                 android.os.Environment.getExternalStorageDirectory(),
                 "GalleryViewer/cache" + "/"
                         // + String.valueOf(AeSimpleSHA1.SHA1(mItems
-                        + String.valueOf(Utils.getMD5(mItems.getImageUrl())));
+//                        + String.valueOf(Utils.getMD5(mItems.getImageUrl())));
+                        + new HashCodeFileNameGenerator().generate(mItems.getImageUrl()));
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(file));
         intent.setDataAndType(Uri.parse("file://" + file.getPath()), "image/*");
