@@ -2,10 +2,13 @@ package com.esstudio.gallary;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -84,8 +87,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class MainActivity extends Activity implements
@@ -217,9 +222,11 @@ public class MainActivity extends Activity implements
 				// .showImageOnLoading(R.drawable.ic_action_play)
 				// .showImageForEmptyUri(R.drawable.ic_action_search)
 				// .showImageOnFail(R.drawable.ic_action_cancel)
-				.resetViewBeforeLoading(true)
-				.cacheInMemory(true).cacheOnDisc(true).considerExifParams(true)
+				.resetViewBeforeLoading(true).cacheInMemory(true)
+				.cacheOnDisc(true).considerExifParams(true)
 //				.displayer(new FadeInBitmapDisplayer(1000))
+
+				.imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
 				.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 		File cacheDir = new File(
@@ -248,6 +255,8 @@ public class MainActivity extends Activity implements
 		initGridView();
 		initNaviDrawer();
 
+		initMyGallay();
+
 		// read prefs
 		readSettings();
 		printSettings();
@@ -270,6 +279,50 @@ public class MainActivity extends Activity implements
 
 		mScale = new ScaleGestureDetector(context,
 				new simpleOnScaleGestureListener());
+
+	}
+
+	public void initMyGallay() {
+
+		File file = new File(
+				android.os.Environment.getExternalStorageDirectory(),
+				"GalleryViewer/download/");
+
+		File[] list = file.listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File pathname) {
+				// TODO Auto-generated method stub
+				if (pathname.getName().toLowerCase()
+						.matches(".*jpg.*|.*jpeg.*|.*png.*|.*gif.*|")) {
+					return true;
+				}
+
+				return false;
+			}
+		});
+		for (int i = 0; i < list.length; i++) {
+			File f = list[i];
+
+			ElementItem item = new ElementItem();
+			item.setImageUrl("file:/" + f.getPath());
+			item.setUrl("file:/" + f.getPath());
+			item.setTitle(f.getName());
+			item.setmTorrent(new ArrayList<String>());
+			item.setmMP4(new ArrayList<String>());
+			item.setmYoutube(new ArrayList<String>());
+			mItems.add(item);
+
+		}
+		
+		Collections.shuffle(mItems);
+		
+		ImageAdaptor adt = (ImageAdaptor) gridView.getAdapter();
+		adt.notifyDataSetChanged();
+
+		// + String.valueOf(AeSimpleSHA1.SHA1(mItems
+		// + String.valueOf(Utils.getMD5(mItems.getImageUrl())));
+
 	}
 
 	public void initNaviDrawer() {
@@ -1174,6 +1227,7 @@ public class MainActivity extends Activity implements
 	}
 
 	public synchronized void addElementItem(ElementItem item) {
+
 		mItems.add(item);
 	}
 

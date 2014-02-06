@@ -89,7 +89,7 @@ public class ImageAdaptor extends BaseAdapter {
 			imageView.setElementItem(item);
 			imageView.setImageResource(0);
 			
-			unvLoader.displayImage(item.getImageUrl(), imageView, options2);
+			unvLoader.displayImage(item.getImageUrl(), imageView, options);
 	
 		}
 

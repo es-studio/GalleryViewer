@@ -238,8 +238,12 @@ public class ThreadTest extends AsyncTask<Object, String, Void> {
 		// TODO Auto-generated method stub
 		super.onProgressUpdate(values);
 		ImageAdaptor adt = (ImageAdaptor) mGview.getAdapter();
-		adt.notifyDataSetChanged();
-//		adt.notifyDataSetInvalidated();
+
+		if (mItems.size() % 5 == 0) {
+			adt.notifyDataSetChanged();
+		}
+
+		// adt.notifyDataSetInvalidated();
 
 		MainActivity.getInstance().getActionBar().setSubtitle(values[0]);
 
@@ -310,12 +314,15 @@ public class ThreadTest extends AsyncTask<Object, String, Void> {
 		String tmp = "";
 		Pattern p1 = Pattern
 				.compile(""
-						+ "//www.youtube.com/v/.{11}" + "|"
-						+ "//www.youtube.com/watch\\?v=[a-z0-9A-Z-_]*" + "|"
-						+ "//youtube.com/v/[a-z0-9A-Z-_]*" + "|"
-						+ "//www.youtube-nocookie.com/v/[a-z0-9A-Z-_]*" + "|"
-						+ "//www.youtube.com/watch\\?list=[a-z0-9A-Z-_&=]*\\&v=[a-z0-9A-Z-_&=]*"
-				);
+						+ "//www.youtube.com/v/.{11}"
+						+ "|"
+						+ "//www.youtube.com/watch\\?v=[a-z0-9A-Z-_]*"
+						+ "|"
+						+ "//youtube.com/v/[a-z0-9A-Z-_]*"
+						+ "|"
+						+ "//www.youtube-nocookie.com/v/[a-z0-9A-Z-_]*"
+						+ "|"
+						+ "//www.youtube.com/watch\\?list=[a-z0-9A-Z-_&=]*\\&v=[a-z0-9A-Z-_&=]*");
 		Matcher m1 = p1.matcher(str);
 
 		while (m1.find()) {
@@ -335,8 +342,9 @@ public class ThreadTest extends AsyncTask<Object, String, Void> {
 		}
 
 		String tmp = "";
-		Pattern p1 = Pattern.compile(""
-				+ "http://[^;|^\"]*\\.mp4|http://[^;|^\"]*\\.flv|http://mgnet.me/\\w*");
+		Pattern p1 = Pattern
+				.compile(""
+						+ "http://[^;|^\"]*\\.mp4|http://[^;|^\"]*\\.flv|http://mgnet.me/\\w*");
 		Matcher m1 = p1.matcher(str);
 
 		while (m1.find()) {
