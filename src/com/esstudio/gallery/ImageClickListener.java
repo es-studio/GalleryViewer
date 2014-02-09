@@ -3,6 +3,7 @@ package com.esstudio.gallery;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 
+import android.R.integer;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
@@ -108,16 +110,19 @@ public class ImageClickListener implements OnItemClickListener {
 		c.startActivity(intent);
 	}
 
+	String imageFileName;
+	String imageFileUrl;
+
 	public void downloadImage() {
 
-		String imageUrl = mItems.getImageUrl();
+		final String imageUrl = mItems.getImageUrl();
 		final String compareString = imageUrl.substring(
 				imageUrl.indexOf("no=") + 3, imageUrl.length());
 
-		final String imageFileName = mItems.getUrl().substring(
+		imageFileName = mItems.getUrl().substring(
 				mItems.getUrl().indexOf("no=") + 3, mItems.getUrl().length())
 				+ ".jpg";
-		final String imageFileUrl = mItems.getImageUrl();
+		imageFileUrl = mItems.getImageUrl();
 
 		// get origin image file and url
 		if (imageUrl.toLowerCase().matches(".*jpg.*|.*gif.*|.*png.*") == false) {
@@ -133,31 +138,112 @@ public class ImageClickListener implements OnItemClickListener {
 						public void onSuccess(String response) {
 
 							Document doc = Jsoup.parse(response);
-							Elements imageName = doc.select("div.box_file li a");
 
-							for (Iterator iterator = imageName.iterator(); iterator
+							int s = imageUrl.indexOf("no=") + 3;
+							int e = imageUrl.contains("&f_no") ? imageUrl
+									.indexOf("&f_no") : imageUrl.length();
+
+							String compareString = imageUrl.substring(s, e);
+
+							Elements viewImage = doc.select("div.s_write img");
+
+							for (Iterator iterator = viewImage.iterator(); iterator
+									.hasNext();) {
+								Element element = (Element) iterator.next();
+
+								String viewUrl = element.attr("src");
+
+								String comString = viewUrl.substring(
+										viewUrl.indexOf("no=") + 3,
+										viewUrl.length());
+
+								log.out(compareString);
+								log.out(comString);
+
+								if (compareString.equals(comString)) {
+
+									// find view image from img onclick
+
+									// find windo.open
+									String onclickString = element
+											.attr("onClick");
+
+									// on img
+									if (onclickString.length() > 0) {
+
+										// onclickString.indexOf("window.open('")
+										int start = onclickString
+												.indexOf("no=") + 13;
+										int end = onclickString.indexOf("'",
+												start);
+										log.out(onclickString);
+										log.out(start + " " + end);
+
+										compareString = onclickString
+												.substring(start, end);
+									}
+
+									// on a
+									else {
+
+										onclickString = element.parent().attr(
+												"onclick");
+										if (onclickString.length() > 0) {
+
+											// onclickString.indexOf("window.open('")
+											int start = onclickString
+													.indexOf("no=") + 13;
+											int end = onclickString.indexOf(
+													"&f_no", start);
+											log.out(onclickString);
+											log.out(start + " " + end);
+
+											compareString = onclickString
+													.substring(start, end);
+										}
+
+									}
+								}
+
+							}
+							log.out(compareString);
+
+							Elements imageFileBox = doc
+									.select("div.box_file li a");
+
+							for (Iterator iterator = imageFileBox.iterator(); iterator
 									.hasNext();) {
 								Element element = (Element) iterator.next();
 								if (element.attr("href")
 										.contains(compareString)) {
-									String imageFileName = element.text();
-									String imageFileUrl = element.attr("href");
+									imageFileName = element.text();
+									imageFileUrl = element.attr("href");
 									log.out(imageFileName);
 									log.out(imageFileUrl);
-									download(imageFileUrl, imageFileName);
+									
+									imageFileUrl = imageFileUrl.replace("download.php",
+											"viewimageM.php");
+
 									break;
 								}
 							}
+
+							download(imageFileUrl, imageFileName);
+
+
 						}
 					});
 
-		}else{
+		} else {
 			download(imageFileUrl, imageFileName);
 		}
 
 	}
 
 	private void download(String url, String name) {
+
+		log.out("download : " + url + "  " + name);
+
 		DownloadManager dnManager = (DownloadManager) MainActivity
 				.getInstance().getSystemService(Context.DOWNLOAD_SERVICE);
 
