@@ -15,8 +15,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.esstudio.gallary.MainActivity;
-import com.esstudio.gallary.Settings;
+import com.esstudio.gallery.MainActivity;
+import com.esstudio.gallery.Settings;
 
 import android.R;
 import android.net.http.AndroidHttpClient;

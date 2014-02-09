@@ -1,4 +1,4 @@
-package com.esstudio.gallary;
+package com.esstudio.gallery;
 
 import java.util.ArrayList;
 

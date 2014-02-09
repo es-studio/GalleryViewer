@@ -1,4 +1,4 @@
-package com.esstudio.gallary;
+package com.esstudio.gallery;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,13 +79,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.esstudio.gallary.R.menu;
+import com.esstudio.gallery.R;
+
+import com.esstudio.gallery.R.menu;
 import com.fedorvlasov.lazylist.ImageLoader;
 import com.fedorvlasov.lazylist.Utils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -124,7 +127,7 @@ public class MainActivity extends Activity implements
 	private com.nostra13.universalimageloader.core.ImageLoader mUnvLoader = com.nostra13.universalimageloader.core.ImageLoader
 			.getInstance();
 	private DisplayImageOptions options;
-	private ThreadTest[] mProcess;
+	private WorkerImageScrap[] mProcess;
 	private GridView gridView;
 	private Menu mMenu;
 	private PullToRefreshGridView mPullToRefreshGridView;
@@ -239,7 +242,8 @@ public class MainActivity extends Activity implements
 
 				// .memoryCache(new UsingFreqLimitedCache(2000000)) // You can
 				// pass your own memory cache implementation
-				.discCache(new UnlimitedDiscCache(cacheDir)) // You can pass
+				.discCache(new TotalSizeLimitedDiscCache(cacheDir, 1000000000))
+//				.discCache(new UnlimitedDiscCache(cacheDir)) // You can pass
 																// your own disc
 																// cache
 																// implementation
@@ -990,13 +994,13 @@ public class MainActivity extends Activity implements
 			Settings.setReverseIndex(mName, mIndex - mLimit);
 
 		if (mProcess == null)
-			mProcess = new ThreadTest[threadCount];
+			mProcess = new WorkerImageScrap[threadCount];
 
 		if (mProcess.length < threadCount)
-			mProcess = new ThreadTest[threadCount];
+			mProcess = new WorkerImageScrap[threadCount];
 
 		for (int i = 0; i < threadCount; i++) {
-			mProcess[i] = new ThreadTest(context, gridView, mItems);
+			mProcess[i] = new WorkerImageScrap(context, gridView, mItems);
 			mProcess[i].executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
 					new Object[] { mUrl, mMaxIndex, index, mLimit });
 			log.out("Worker : " + i + " / " + threadCount);

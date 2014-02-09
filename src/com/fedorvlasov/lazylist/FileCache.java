@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 
-import com.esstudio.gallary.AeSimpleSHA1;
+import com.esstudio.gallery.AeSimpleSHA1;
 
 import android.content.Context;
 

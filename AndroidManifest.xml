@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.esstudio.gallary"
+    package="com.esstudio.gallery"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -20,7 +20,7 @@
         android:largeHeap="true"
         android:theme="@android:style/Theme.Holo.Light" >
         <activity
-            android:name="com.esstudio.gallary.MainActivity"
+            android:name="com.esstudio.gallery.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="user" >
@@ -36,12 +36,12 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.esstudio.gallary.PrefsActivity"
+            android:name="com.esstudio.gallery.PrefsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.esstudio.gallary.GalleryChooser"
+            android:name="com.esstudio.gallery.GalleryChooser"
             android:label="@string/title_activity_gallery_chooser" >
         </activity>
     </application>
