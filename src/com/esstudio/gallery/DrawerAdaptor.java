@@ -88,8 +88,8 @@ public class DrawerAdaptor extends BaseAdapter {
 			tv2 = (TextView) convertView.findViewById(R.id.textView2);
 		}
 
-		tv1.setTextColor(Color.BLACK);
-		tv2.setTextColor(Color.DKGRAY);
+		tv1.setTextColor(Color.LTGRAY);
+		tv2.setTextColor(Color.LTGRAY);
 
 		tv1.setText(item[1]);
 		tv2.setText(item[0]);

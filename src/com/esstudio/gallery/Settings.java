@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.Set;
 import java.util.prefs.Preferences;
@@ -194,7 +195,7 @@ public class Settings {
 
 	}
 
-	public static HashMap<String, String> getProperties(Context context) {
+	public static LinkedHashMap<String, String> getProperties(Context context) {
 
 		File dataDir = new File(
 				android.os.Environment.getExternalStorageDirectory(),
@@ -223,7 +224,8 @@ public class Settings {
 			e.printStackTrace();
 		}
 
-		HashMap<String, String> map = new HashMap<String, String>();
+		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        map.put("My Gallery", "내 갤러리"); 
 		Set<Object> keys = properties.keySet();
 		Collection<Object> values = properties.values();
 
