@@ -5,7 +5,6 @@
     <!-- You can place more preferences here that will be shown on the next screen. -->
 
     <PreferenceCategory
-        android:shouldDisableView="true"
         android:title="URL Settings" >
         <EditTextPreference
             android:defaultValue="http://m.dcinside.com/view.php?id=$NAME&amp;no="
@@ -37,7 +36,6 @@
             android:numeric="integer"
             android:summary="Max Count of Limitation"
             android:title="Limit" />
-
         <CheckBoxPreference
             android:key="pImageOnly"
             android:summary="Image Include Contents or Not"
@@ -53,6 +51,15 @@
             android:summary="Number of Column Image"
             android:title="Column" />
     </PreferenceCategory>
+
+     <PreferenceCategory android:title="Directory" >
+        <EditTextPreference
+            android:defaultValue="/sdcard/"
+            android:key="pBaseDir"
+            android:summary="Please choose application directory"
+            android:title="Base Directory" />
+     </PreferenceCategory>
+
     <PreferenceCategory android:title="Auto Scroll" >
         <ListPreference
             android:defaultValue="3"

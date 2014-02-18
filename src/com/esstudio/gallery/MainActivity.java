@@ -123,6 +123,8 @@ public class MainActivity extends Activity implements
     private boolean onScroll = false;
     private boolean onFullScreen = false;
 
+    private Thread mAutoScroller;
+
     // General components
     private ImageLoader mLoader;
     private com.nostra13.universalimageloader.core.ImageLoader mUnvLoader = com.nostra13.universalimageloader.core.ImageLoader
@@ -235,9 +237,7 @@ public class MainActivity extends Activity implements
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
 
-        File cacheDir = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/cache/");
+        File cacheDir = Settings.getCacheDirectory(this);
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 this).threadPoolSize(3).threadPriority(Thread.MIN_PRIORITY + 3)
@@ -261,7 +261,6 @@ public class MainActivity extends Activity implements
 
         initGridView();
         initNaviDrawer();
-
         initMyGallay();
 
         // read prefs
@@ -292,11 +291,13 @@ public class MainActivity extends Activity implements
 
     public void initMyGallay() {
 
+        mName = "My Gallery";
         mItems.clear();
 
-        File file = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/download/");
+        File file = Settings.getDownloadDirectory(this);
+        log.out(file.getPath());
+
+
 
         File[] list = file.listFiles(new FileFilter() {
 
@@ -311,6 +312,14 @@ public class MainActivity extends Activity implements
                 return false;
             }
         });
+
+        if (list == null) {
+
+            log.out("No Download Images");
+            return;
+        }
+
+
         for (int i = 0; i < list.length; i++) {
             File f = list[i];
 
@@ -376,6 +385,8 @@ public class MainActivity extends Activity implements
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
 
+                TextView tv2 = (TextView) arg1.findViewById(R.id.textView2);
+                mName = tv2.getText().toString().trim();
 
                 switch (position) {
 
@@ -387,8 +398,6 @@ public class MainActivity extends Activity implements
                         break;
                     default:
 
-                        TextView tv1 = (TextView) arg1.findViewById(R.id.textView1);
-                        TextView tv2 = (TextView) arg1.findViewById(R.id.textView2);
 
                         showToast(tv2.getText().toString());
                         Settings.setPrefsString(context, Settings.PREF_NAME, tv2
@@ -501,24 +510,53 @@ public class MainActivity extends Activity implements
                     @Override
                     public void onPullDownToRefresh(
                             PullToRefreshBase<GridView> refreshView) {
-                        showToast("Pull Down!");
+//                        showToast("Scan from " + mIndex + " to " + mIndex + mLimit);
                         mPullToRefreshGridView.onRefreshComplete();
                     }
 
                     @Override
                     public void onPullUpToRefresh(
                             PullToRefreshBase<GridView> refreshView) {
-                        showToast("Pull Up!");
 
-                        if (gridView.getLastVisiblePosition() == (mItems.size() - 1)) {
-                            log.out("bottom!");
+                        if (isRunning()) {
+
+                            showToast("Still scanning...");
+
+                        } else {
+
+                            showToast("Scanning from " + mIndex + " +" + mLimit + "...");
                             nextImageScrap();
                         }
-                        myLastVisiblePos = gridView.getLastVisiblePosition();
 
+//                        if (gridView.getLastVisiblePosition() == (mItems.size() - 1)) {
+//                            nextImageScrap();
+//                        }
+                        myLastVisiblePos = gridView.getLastVisiblePosition();
                         mPullToRefreshGridView.onRefreshComplete();
                     }
                 });
+
+//        mPullToRefreshGridView.setOnScrollListener(new OnScrollListener() {
+//            int myLastVisiblePos = gridView.getFirstVisiblePosition();
+//
+//            @Override
+//            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                // TODO Auto-generated method stub
+//                myLastVisiblePos = view.getLastVisiblePosition();
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView view, int firstVisibleItem,
+//                                 int visibleItemCount, int totalItemCount) {
+//                if (view.getLastVisiblePosition() == (mItems.size() - 1)) {
+//                    showToast("scroll on");
+//                    onScroll = true;
+//                }else{
+//                    showToast("scroll false");
+//                    onScroll = false;
+//                }
+//            }
+//        });
 
     }
 
@@ -613,47 +651,7 @@ public class MainActivity extends Activity implements
 
             case R.id.itemAutoScroll:
 
-                onScroll = true;
-                mDrawerLayout.setKeepScreenOn(true);
-
-                new Thread(new Runnable() {
-                    public void run() {
-
-                        for (int i = 0; i < 100; i++) {
-                            gridView.post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    // TODO Auto-generated method stub
-
-                                    int last_position = gridView
-                                            .getLastVisiblePosition();
-                                    int total = gridView.getCount();
-
-                                    if (total > last_position) {
-                                        // gridView.smoothScrollByOffset(1);
-                                        gridView.smoothScrollBy(
-                                                getThumbnailWidth(),
-                                                mScrollSpeed * 1000);
-                                    }
-
-                                }
-                            });
-
-                            try {
-                                Thread.sleep(1000 * mScrollSpeed);
-                            } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
-                            if (onScroll == false) {
-                                break;
-                            }
-                        }
-
-                    }
-                }).start();
+                runAutoScroll();
 
                 break;
 
@@ -818,7 +816,7 @@ public class MainActivity extends Activity implements
 
         try {
             mUrl = Settings.getPrefsString(context, "pURL");
-            mName = Settings.getPrefsString(context, "pName");
+//            mName = Settings.getPrefsString(context, "pName");
             mLimit = Settings.getPrefsInteger(context, "pLimit");
             mColumn = Settings.getPrefsInteger(context, "pColumn");
             mMaxWorker = Settings.getPrefsInteger(context, "pMaxWorker");
@@ -1032,6 +1030,60 @@ public class MainActivity extends Activity implements
 
     }
 
+
+    public void runAutoScroll() {
+        onScroll = true;
+//        mDrawerLayout.setKeepScreenOn(true);
+
+        if (mAutoScroller == null) {
+            mAutoScroller = new Thread(new Runnable() {
+                public void run() {
+
+                    if(mItems.size() == 0) return;
+
+
+                    for (int i = 0; i < 100; i++) {
+                        gridView.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // TODO Auto-generated method stub
+
+                                int last_position = gridView
+                                        .getLastVisiblePosition();
+                                int total = gridView.getCount();
+
+                                if (total > last_position) {
+                                    // gridView.smoothScrollByOffset(1);
+                                    gridView.smoothScrollBy(
+                                            getThumbnailWidth(),
+                                            mScrollSpeed * 1000);
+                                }
+
+                            }
+                        });
+
+                        try {
+                            Thread.sleep(1000 * mScrollSpeed);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                        if (onScroll == false) {
+                            break;
+                        }
+                    }
+
+                }
+            });
+        }
+
+        if(onScroll) mAutoScroller.start();
+
+    }
+
+
     public void processCancel() {
 
         if (isRunning() == false)
@@ -1184,6 +1236,8 @@ public class MainActivity extends Activity implements
                                             + mName)
                             .userAgent(Settings.USER_AGENT).get();
 
+                    log.out("Name : " + mName);
+
                     // con_substance
                     Elements el = doc.select("a.list_picture_a");
                     Element maxEl = el.get(0);
@@ -1257,6 +1311,7 @@ public class MainActivity extends Activity implements
     public synchronized void addElementItem(ElementItem item) {
 
         mItems.add(item);
+//        runAutoScroll();
     }
 
     public ImageLoader getImageLoader() {

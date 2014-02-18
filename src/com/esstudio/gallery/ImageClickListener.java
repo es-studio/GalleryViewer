@@ -50,35 +50,6 @@ public class ImageClickListener implements OnItemClickListener {
 	private Context c;
 	private ArrayList<ElementItem> mAllItems;
 	private ElementItem mItems;
-	private BroadcastReceiver completeReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-					c).setContentTitle("My notification").setContentText(
-					"Hello World!");
-			// Creates an explicit intent for an Activity in your app
-			Intent resultIntent = new Intent(c, MainActivity.class);
-
-			TaskStackBuilder stackBuilder = TaskStackBuilder.create(c);
-			// Adds the back stack for the Intent (but not the Intent itself)
-			stackBuilder.addParentStack(MainActivity.class);
-			// Adds the Intent that starts the Activity to the top of the stack
-			stackBuilder.addNextIntent(resultIntent);
-			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
-					0, PendingIntent.FLAG_UPDATE_CURRENT);
-			mBuilder.setContentIntent(resultPendingIntent);
-			NotificationManager mNotificationManager = (NotificationManager) c
-					.getSystemService(Context.NOTIFICATION_SERVICE);
-			// mId allows you to update the notification later on.
-			mNotificationManager.notify(12345, mBuilder.build());
-
-			Toast.makeText(context, "Download Done!", Toast.LENGTH_SHORT)
-					.show();
-		}
-
-	};
 
 	public ImageClickListener(Context c, ArrayList<ElementItem> item) {
 		this.c = c;
@@ -89,8 +60,7 @@ public class ImageClickListener implements OnItemClickListener {
 		Context c = MainActivity.getInstance();
 
 		File file = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/cache" + "/"
+                Settings.getCacheDirectory(c), ""
 				// + String.valueOf(AeSimpleSHA1.SHA1(mItems
 				// + String.valueOf(Utils.getMD5(mItems.getImageUrl())));
 						+ new HashCodeFileNameGenerator().generate(mItems
@@ -266,14 +236,13 @@ public class ImageClickListener implements OnItemClickListener {
 		File downDir = null;
 		if (android.os.Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED))
-			downDir = new File(Environment.getExternalStorageDirectory(),
-					"GalleryViewer/download/" + now + "_" + name);
+			downDir = new File(Settings.getDownloadDirectory(c), now + "_" + name);
 
 		request.setDestinationUri(Uri.fromFile(downDir));
 
 		IntentFilter completeFilter = new IntentFilter(
 				DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-		MainActivity.getInstance().registerReceiver(completeReceiver,
+		MainActivity.getInstance().registerReceiver(new DownloadCompleteBroadcastReceiver(c, name),
 				completeFilter);
 
 		// Enqueue a new download and same the referenceId
@@ -327,8 +296,7 @@ public class ImageClickListener implements OnItemClickListener {
 		File logFile = null;
 		if (android.os.Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED)) {
-			logFile = new File(Environment.getExternalStorageDirectory(),
-					"GalleryViewer/debug.log");
+			logFile = Settings.getLogDirectory(c);
 
 			try {
 				FileWriter fw = new FileWriter(logFile, true);
@@ -407,7 +375,13 @@ public class ImageClickListener implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
 		mItems = mAllItems.get(arg2);
-		showDialog();
+
+        log.out(MainActivity.getInstance().getGalleyName());
+        if(MainActivity.getInstance().getGalleyName().equals("My Gallery")){
+            openImage();
+        }else{
+            showDialog();
+        }
 
 	}
 }

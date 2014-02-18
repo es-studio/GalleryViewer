@@ -29,285 +29,318 @@ import android.util.Log;
 
 public class Settings {
 
-	public static final String USER_AGENT = ""
-			+ "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) "
-			+ "AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19";
+    public static final String USER_AGENT = ""
+            + "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) "
+            + "AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19";
 
-	public static final String USER_AGENT_SAFARI = ""
-			+ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) "
-			+ "AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10";
+    public static final String USER_AGENT_SAFARI = ""
+            + "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) "
+            + "AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10";
 
-	public static final String PREF_URL = "pURL";
-	public static final String PREF_NAME = "pName";
-	public static final String PREF_LIMIT = "pLimit";
-	public static final String PREF_COLUMN = "pColumn";
-	public static final String PREF_KEYWORD = "pKeyword";
-	public static final String PREF_IMAGEONLY = "pImageOnly";
-	public static final String PREF_MAXWORKER = "pMaxWorker";
-	public static final String PREF_REVERSEMODE = "pReverseMode";
-	public static final String PREF_MYGALLERYSET = "pMyGallerySet";
+    public static final String PREF_URL = "pURL";
+    public static final String PREF_NAME = "pName";
+    public static final String PREF_LIMIT = "pLimit";
+    public static final String PREF_COLUMN = "pColumn";
+    public static final String PREF_BASEDIR = "pBaseDir";
+    public static final String PREF_KEYWORD = "pKeyword";
+    public static final String PREF_IMAGEONLY = "pImageOnly";
+    public static final String PREF_MAXWORKER = "pMaxWorker";
+    public static final String PREF_REVERSEMODE = "pReverseMode";
+    public static final String PREF_MYGALLERYSET = "pMyGallerySet";
 
-	private static SharedPreferences pref;
+    private static SharedPreferences pref;
 
-	public Settings() {
-	}
+    public Settings() {
+    }
 
-	public static String getPrefsString(Context context, String key) {
-		if (pref == null) {
-			pref = PreferenceManager.getDefaultSharedPreferences(context);
-			if (pref.getAll().isEmpty())
-				setPrefsDefault(context);
-		}
-		return pref.getString(key, null);
-	}
+    public static String getPrefsString(Context context, String key) {
+        if (pref == null) {
+            pref = PreferenceManager.getDefaultSharedPreferences(context);
+            if (pref.getAll().isEmpty())
+                setPrefsDefault(context);
+        }
+        return pref.getString(key, null);
+    }
 
-	public static int getPrefsInteger(Context context, String key) {
-		if (pref == null) {
-			pref = PreferenceManager.getDefaultSharedPreferences(context);
-			if (pref.getAll().isEmpty())
-				setPrefsDefault(context);
-		}
+    public static int getPrefsInteger(Context context, String key) {
+        if (pref == null) {
+            pref = PreferenceManager.getDefaultSharedPreferences(context);
+            if (pref.getAll().isEmpty())
+                setPrefsDefault(context);
+        }
 
-		String v = pref.getString(key, null);
+        String v = pref.getString(key, null);
 
-		return v == null ? -1 : Integer.parseInt(pref.getString(key, null));
-	}
+        return v == null ? -1 : Integer.parseInt(pref.getString(key, null));
+    }
 
-	public static void setPrefsDefault(Context context) {
-		if (pref == null) {
-			pref = PreferenceManager.getDefaultSharedPreferences(context);
-		}
+    public static void setPrefsDefault(Context context) {
+        if (pref == null) {
+            pref = PreferenceManager.getDefaultSharedPreferences(context);
+        }
 
-		Log.i("tag", "Restore Default Setting");
-		SharedPreferences.Editor editor = pref.edit();
+        Log.i("tag", "Restore Default Setting");
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(PREF_KEYWORD, "");
+        editor.putString(PREF_NAME, "taeyeon_new1");
+        editor.putString(PREF_URL, "http://m.dcinside.com/view.php?id=$NAME&no=");
+        editor.putString(PREF_COLUMN, "3");
+        editor.putString(PREF_LIMIT, "50");
+        editor.putString(PREF_MAXWORKER, "3");
+        // editor.putBoolean(PREF_IMAGEONLY, true);
+        editor.putString(PREF_REVERSEMODE, "false");
 
-		editor.putString(PREF_KEYWORD, "");
-		editor.putString(PREF_NAME, "taeyeon_new1");
-		editor.putString(PREF_URL,
-				"http://m.dcinside.com/view.php?id=$NAME&no=");
-		editor.putString(PREF_COLUMN, "3");
-		editor.putString(PREF_LIMIT, "50");
-		editor.putString(PREF_MAXWORKER, "3");
-		// editor.putBoolean(PREF_IMAGEONLY, true);
+        editor.apply();
+    }
 
-		editor.putString(PREF_REVERSEMODE, "false");
+    public static void setPrefsString(Context context, String key, String value) {
+        if (pref == null) {
+            pref = PreferenceManager.getDefaultSharedPreferences(context);
+        }
+        log.out("pref : " + key + " " + value);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(key, value);
+        editor.apply();
 
-		editor.apply();
-	}
+    }
 
-	public static void setPrefsString(Context context, String key, String value) {
-		if (pref == null) {
-			pref = PreferenceManager.getDefaultSharedPreferences(context);
-		}
-		log.out("pref : " + key + " " + value);
-		SharedPreferences.Editor editor = pref.edit();
-		editor.putString(key, value);
-		editor.apply();
+    public static void setProperties(Context context, String key, String value) {
 
-	}
+        File dataDir = new File(
+                android.os.Environment.getExternalStorageDirectory(),
+                "GalleryViewer/data/");
+        if (!dataDir.exists())
+            dataDir.mkdirs();
 
-	public static void setProperties(Context context, String key, String value) {
+        File file = new File(dataDir.getPath() + "/settings.properties");
+        if (file.exists() == false) {
+            try {
+                file.createNewFile();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
 
-		File dataDir = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/data/");
-		if (!dataDir.exists())
-			dataDir.mkdirs();
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		File file = new File(dataDir.getPath() + "/settings.properties");
-		if (file.exists() == false) {
-			try {
-				file.createNewFile();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+        properties.setProperty(key, value);
+        try {
+            properties.store(new FileOutputStream(file), null);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		Properties properties = new Properties();
-		try {
-			properties.load(new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    }
 
-		properties.setProperty(key, value);
-		try {
-			properties.store(new FileOutputStream(file), null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public static void setProperties(HashMap<String, String> items) {
 
-	}
+        File dataDir = new File(
+                android.os.Environment.getExternalStorageDirectory(),
+                "GalleryViewer/data/");
 
-	public static void setProperties(HashMap<String, String> items) {
+        if (!dataDir.exists())
+            dataDir.mkdirs();
 
-		File dataDir = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/data/");
+        File file = new File(dataDir.getPath() + "/settings.properties");
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		if (!dataDir.exists())
-			dataDir.mkdirs();
+        properties.clear();
 
-		File file = new File(dataDir.getPath() + "/settings.properties");
-		Properties properties = new Properties();
-		try {
-			properties.load(new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        Set<String> keys = items.keySet();
+        Collection<String> values = items.values();
 
-		properties.clear();
+        Object[] k = keys.toArray();
+        Object[] v = values.toArray();
 
-		Set<String> keys = items.keySet();
-		Collection<String> values = items.values();
+        for (int i = 0; i < keys.size(); i++) {
+            properties.setProperty(k[i].toString(), v[i].toString());
+            log.out("k: " + k[i].toString() + " v: " + v[i].toString());
 
-		Object[] k = keys.toArray();
-		Object[] v = values.toArray();
+        }
 
-		for (int i = 0; i < keys.size(); i++) {
-			properties.setProperty(k[i].toString(), v[i].toString());
-			log.out("k: " + k[i].toString() + " v: " + v[i].toString());
+        try {
+            properties.store(new FileOutputStream(file), null);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		}
+    }
 
-		try {
-			properties.store(new FileOutputStream(file), null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public static LinkedHashMap<String, String> getProperties(Context context) {
 
-	}
+        File dataDir = getDataDirectory(context);
+        if (!dataDir.exists())
+            dataDir.mkdirs();
 
-	public static LinkedHashMap<String, String> getProperties(Context context) {
+        File file = new File(dataDir.getPath() + "/settings.properties");
+        if (file.exists() == false) {
+            try {
+                file.createNewFile();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
 
-		File dataDir = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/data/");
-		if (!dataDir.exists())
-			dataDir.mkdirs();
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		File file = new File(dataDir.getPath() + "/settings.properties");
-		if (file.exists() == false) {
-			try {
-				file.createNewFile();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        map.put("My Gallery", "³» °¶·¯¸®");
+        Set<Object> keys = properties.keySet();
+        Collection<Object> values = properties.values();
 
-		Properties properties = new Properties();
-		try {
-			properties.load(new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        Object[] k = keys.toArray();
+        Object[] v = values.toArray();
 
-		LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
-        map.put("My Gallery", "ë‚´ ê°¤ëŸ¬ë¦¬"); 
-		Set<Object> keys = properties.keySet();
-		Collection<Object> values = properties.values();
+        for (int i = 0; i < keys.size(); i++) {
+            map.put(k[i].toString(), v[i].toString());
+            log.out("k: " + k[i].toString() + " v: " + v[i].toString());
+        }
 
-		Object[] k = keys.toArray();
-		Object[] v = values.toArray();
+        return map;
 
-		for (int i = 0; i < keys.size(); i++) {
-			map.put(k[i].toString(), v[i].toString());
-			log.out("k: " + k[i].toString() + " v: " + v[i].toString());
-		}
+    }
 
-		return map;
+    public static void setProferencesListener(
+            OnSharedPreferenceChangeListener listener) {
+        pref.registerOnSharedPreferenceChangeListener(listener);
 
-	}
+    }
 
-	public static void setProferencesListener(
-			OnSharedPreferenceChangeListener listener) {
-		pref.registerOnSharedPreferenceChangeListener(listener);
+    public static boolean getReverseMode() {
 
-	}
+        String Rvrs = pref.getString(PREF_REVERSEMODE, null);
+        if (Rvrs == null)
+            Rvrs = "false";
 
-	public static boolean getReverseMode() {
+        return Boolean.valueOf(Rvrs);
+    }
 
-		String Rvrs = pref.getString(PREF_REVERSEMODE, null);
-		if (Rvrs == null)
-			Rvrs = "false";
+    public static void setReverseIndex(String key, int maxIndex) {
+        // SharedPreferences.Editor editor = pref.edit();
+        // editor.putInt(key, maxIndex);
+        // editor.apply();
 
-		return Boolean.valueOf(Rvrs);
-	}
+        File dataDir = new File(
+                android.os.Environment.getExternalStorageDirectory(),
+                "GalleryViewer/data/");
+        if (!dataDir.exists())
+            dataDir.mkdirs();
 
-	public static void setReverseIndex(String key, int maxIndex) {
-		// SharedPreferences.Editor editor = pref.edit();
-		// editor.putInt(key, maxIndex);
-		// editor.apply();
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(
+                    dataDir.getPath() + "/" + key, true));
+            bw.write("\n" + String.valueOf(maxIndex));
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		File dataDir = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/data/");
-		if (!dataDir.exists())
-			dataDir.mkdirs();
+    }
 
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(
-					dataDir.getPath() + "/" + key, true));
-			bw.write("\n" + String.valueOf(maxIndex));
-			bw.flush();
-			bw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public static int getReverseIndex(String key) {
 
-	}
+        File dataDir = new File(
+                android.os.Environment.getExternalStorageDirectory(),
+                "GalleryViewer/data/");
+        if (!dataDir.exists())
+            dataDir.mkdirs();
 
-	public static int getReverseIndex(String key) {
+        String line;
+        int maxIndex = 0;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(
+                    dataDir.getPath() + "/" + key));
 
-		File dataDir = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/data/");
-		if (!dataDir.exists())
-			dataDir.mkdirs();
+            String tmp = "0";
+            while ((line = br.readLine()) != null) {
+                // pass
+                tmp = line;
+            }
 
-		String line;
-		int maxIndex = 0;
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(
-					dataDir.getPath() + "/" + key));
+            br.close();
+            maxIndex = Integer.valueOf(tmp);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-			String tmp = "0";
-			while ((line = br.readLine()) != null) {
-				// pass
-				tmp = line;
-			}
+        // return pref.getInt(key, 0);
+        return maxIndex;
+    }
 
-			br.close();
-			maxIndex = Integer.valueOf(tmp);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public static String getBaseDirectory(Context context) {
+        String baseDir = getPrefsString(context, PREF_BASEDIR);
 
-		// return pref.getInt(key, 0);
-		return maxIndex;
-	}
+        if (baseDir == null)
+            baseDir = android.os.Environment.getExternalStorageDirectory().getPath();
+
+        if(baseDir.charAt(baseDir.length() - 1) != '/'){
+            baseDir += '/';
+        }
+
+        return baseDir;
+    }
+
+    public static File getDownloadDirectory(Context context) {
+        File file = new File(Settings.getBaseDirectory(context) + "/GalleryViewer/download");
+        log.out(file.getPath());
+        return file;
+    }
+
+    public static File getCacheDirectory(Context context) {
+        File file = new File(Settings.getBaseDirectory(context) + "/GalleryViewer/cache");
+        log.out(file.getPath());
+        return file;
+    }
+
+    public static File getDataDirectory(Context context) {
+        File file = new File(Settings.getBaseDirectory(context) + "/GalleryViewer/data");
+        log.out(file.getPath());
+        return file;
+    }
+
+    public static File getLogDirectory(Context context) {
+        File file = new File(Settings.getBaseDirectory(context) + "/GalleryViewer");
+        log.out(file.getPath());
+        return file;
+    }
 }

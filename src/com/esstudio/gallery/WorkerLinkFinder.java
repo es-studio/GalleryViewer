@@ -101,7 +101,7 @@ public class WorkerLinkFinder {
 		Pattern p1 = Pattern.compile(
 		// "(07|08|09|10|11|12|13|14|15).?(01|02|03|04|05|06|07|08|09|10|11|12).?[0-9]{2}[^0-9]|"
 		// // 날짜 검
-				"마그넷|자석|magnet|gnet:|urn|torrent|torr|rent|기차|직캠|픽짜|토렝|토랭|토렌트|토런트|토렌|토런|"
+				"마그넷|자석|magnet|gnet|urn|torrent|torr|rent|기차|직캠|픽짜|토렝|토랭|토렌트|토런트|토렌|토런|"
 						+ "flvs.daum.net|www.youtube.com|"
 						+ "스티큐브|꾸러미|\\.avi|\\.mkv|\\.tp|\\.ts|\\.mp4|\\.flv|\\.mov|\\.wmv|\\.swf");
 
@@ -127,9 +127,10 @@ public class WorkerLinkFinder {
 		}
 
 		String tmp = "";
-		Pattern p1 = Pattern.compile("urn:\\w*:\\w*\\s|urn:\\w*:\\w*\\&");
+        Pattern p1 = Pattern.compile("urn:\\w*:\\w*\\s|urn:\\w*:\\w*\\&|urn:\\w*:\\w{40}|urn:\\w*:\\w{32}");
 
-		Matcher m1 = p1.matcher(str);
+
+        Matcher m1 = p1.matcher(str);
 
 		while (m1.find()) {
 			tmp = m1.group();

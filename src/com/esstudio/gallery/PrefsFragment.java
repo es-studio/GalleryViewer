@@ -44,9 +44,7 @@ public class PrefsFragment extends PreferenceFragment implements
 	public void calcCacheSize() {
 
 		File inCache = MainActivity.getInstance().getCacheDir();
-		File extCache = new File(
-				android.os.Environment.getExternalStorageDirectory(),
-				"GalleryViewer/cache");
+		File extCache = Settings.getCacheDirectory(MainActivity.getInstance());
 
 		if (extCache.exists() == false)
 			extCache.mkdirs();
