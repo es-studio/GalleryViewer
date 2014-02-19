@@ -106,9 +106,7 @@ public class Settings {
 
     public static void setProperties(Context context, String key, String value) {
 
-        File dataDir = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/data/");
+        File dataDir = getDataDirectory(context);
         if (!dataDir.exists())
             dataDir.mkdirs();
 
@@ -148,9 +146,7 @@ public class Settings {
 
     public static void setProperties(HashMap<String, String> items) {
 
-        File dataDir = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/data/");
+        File dataDir = getDataDirectory(MainActivity.getInstance());
 
         if (!dataDir.exists())
             dataDir.mkdirs();
@@ -257,9 +253,7 @@ public class Settings {
         // editor.putInt(key, maxIndex);
         // editor.apply();
 
-        File dataDir = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/data/");
+        File dataDir = getDataDirectory(MainActivity.getInstance());
         if (!dataDir.exists())
             dataDir.mkdirs();
 
@@ -278,9 +272,9 @@ public class Settings {
 
     public static int getReverseIndex(String key) {
 
-        File dataDir = new File(
-                android.os.Environment.getExternalStorageDirectory(),
-                "GalleryViewer/data/");
+
+        File dataDir = getDataDirectory(MainActivity.getInstance());
+        log.out("data dir : " + dataDir.getPath());
         if (!dataDir.exists())
             dataDir.mkdirs();
 
