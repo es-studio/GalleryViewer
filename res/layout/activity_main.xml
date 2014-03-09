@@ -6,7 +6,8 @@
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:paddingLeft="1px">
 
         <!--
         <GridView
@@ -24,12 +25,12 @@
             android:id="@+id/pull_refresh_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:horizontalSpacing="1dp"
+            android:horizontalSpacing="0dp"
             android:numColumns="3"
-            android:verticalSpacing="0dp"
-            ptr:ptrMode="both" />
+            ptr:ptrMode="pullUpFromBottom" />
     </FrameLayout>
 
+    <!--android:verticalSpacing="0dp"-->
     <ListView
         android:id="@+id/left_drawer"
         android:layout_width="240dp"

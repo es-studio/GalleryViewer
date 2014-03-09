@@ -3,49 +3,62 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="15dp">
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please Select Exploring Mothod"
-        android:textSize="20dp" />
+        android:textSize="18dp"
+        android:layout_marginBottom="10dp"
+        android:text="Please select exploring method" />
 
-    <RadioButton
-        android:id="@+id/radioButton1"
+    <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
-        android:text="Latest" />
+        android:layout_height="wrap_content">
 
-    <RadioButton
-        android:id="@+id/radioButton2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Previous" />
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="149dp"
-            android:layout_height="wrap_content"
-            android:text="OK" />
-
-        <Button
-            android:id="@+id/button2"
+        <RadioButton
+            android:id="@+id/radioLatest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cancel" />
-    </LinearLayout>
+            android:layout_gravity="left|top"
+            android:text="From latest"
+            android:checked="false" />
+
+        <EditText
+            android:id="@+id/editLatest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center_horizontal|right"
+            android:layout_marginLeft="20dp"
+            android:autoText="false"
+            android:inputType="numberDecimal"
+            android:singleLine="true"
+            android:gravity="right"
+            android:text="123" />
+
+        <RadioButton
+            android:id="@+id/radioPrev"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="From previous specific point"
+            android:checked="false" />
+
+        <EditText
+            android:id="@+id/editPrev"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="right"
+            android:layout_marginLeft="20dp"
+            android:inputType="numberDecimal"
+            android:singleLine="true"
+            android:text="123"
+            android:gravity="right" />
+
+    </RadioGroup>
 
 </LinearLayout>

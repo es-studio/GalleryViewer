@@ -1,46 +1,24 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.gridview;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import com.fedorvlasov.lazylist.ImageLoader;
+import com.esstudio.gallery.HttpLogin;
+import com.esstudio.gallery.MainActivity;
+import com.esstudio.gallery.Settings;
+import com.esstudio.gallery.util.log;
 
-import android.R.array;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ImageView.ScaleType;
 
 public class WorkerImageScrap extends AsyncTask<Object, String, Void> {
 
@@ -49,8 +27,8 @@ public class WorkerImageScrap extends AsyncTask<Object, String, Void> {
 	Context context;
 	int mIndex = 0;
 	int mMaxIndex = 0;
-	boolean isDone = false;
-	boolean isMaxLimited = false;
+	public boolean isDone = false;
+	public boolean isMaxLimited = false;
 
 	public WorkerImageScrap(Context c, GridView g, ArrayList<ElementItem> items) {
 		this.mGview = g;
@@ -106,7 +84,7 @@ public class WorkerImageScrap extends AsyncTask<Object, String, Void> {
 
 			HttpResponse response;
 			try {
-				response = client.execute(get);
+				response = client.execute(get, HttpLogin.getInstance().getCookie());
 				GZIPInputStream gin = new GZIPInputStream(response.getEntity()
 						.getContent());
 				BufferedReader br = new BufferedReader(new InputStreamReader(

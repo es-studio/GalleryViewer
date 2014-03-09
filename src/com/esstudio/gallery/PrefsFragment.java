@@ -96,7 +96,10 @@ public class PrefsFragment extends PreferenceFragment implements
 
 			ImageLoader loader = MainActivity.getInstance().getImageLoader();
 			loader.clearCache();
+
+            MainActivity.getInstance().getUnvLoader().clearDiscCache();
 			MainActivity.getInstance().showToast("Clear Cache Done!");
+
 
 		} else if ("pReset".equals(preference.getKey())) {
 			Settings.setPrefsDefault(MainActivity.getInstance().getContext());

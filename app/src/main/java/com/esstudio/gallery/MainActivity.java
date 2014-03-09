@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpResponse;
@@ -23,8 +21,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.R.integer;
-import android.R.string;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -58,43 +54,40 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.esstudio.gallery.R;
-
-import com.esstudio.gallery.R.menu;
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.gridview.ImageAdaptor;
+import com.esstudio.gallery.gridview.ImageClickListener;
+import com.esstudio.gallery.gridview.WorkerImageScrap;
+import com.esstudio.gallery.navi.NaviDrawerAdaptor;
+import com.esstudio.gallery.navi.NaviDrawerLongClickListener;
+import com.esstudio.gallery.util.Calc;
+import com.esstudio.gallery.util.NetworkUtil;
+import com.esstudio.gallery.util.log;
 import com.fedorvlasov.lazylist.ImageLoader;
-import com.fedorvlasov.lazylist.Utils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class MainActivity extends Activity implements
 		OnSharedPreferenceChangeListener {
@@ -136,7 +129,7 @@ public class MainActivity extends Activity implements
 	private ListView mNavList;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mActionBarToggle;
-	private DrawerAdaptor mNavListAdaptor;
+	private NaviDrawerAdaptor mNavListAdaptor;
 
 	public ArrayList<ElementItem> mItems = new ArrayList<ElementItem>();
 	public HashMap<String, String> mGalleryList = new HashMap<String, String>();
@@ -413,10 +406,10 @@ public class MainActivity extends Activity implements
 		// get list
 		mGalleryList = Settings.getProperties(context);
 
-		mNavListAdaptor = new DrawerAdaptor(context, mGalleryList);
+		mNavListAdaptor = new NaviDrawerAdaptor(context, mGalleryList);
 		mNavList.setAdapter(mNavListAdaptor);
 
-		mNavList.setOnItemLongClickListener(new DrawerLongClickListener(
+		mNavList.setOnItemLongClickListener(new NaviDrawerLongClickListener(
 				mGalleryList, mNavListAdaptor));
 
 	}

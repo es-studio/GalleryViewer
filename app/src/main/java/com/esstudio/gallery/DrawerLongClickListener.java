@@ -2,27 +2,26 @@ package com.esstudio.gallery;
 
 import java.util.HashMap;
 
-import com.esstudio.gallery.R;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.TextView;
+
+import com.esstudio.gallery.navi.NaviDrawerAdaptor;
 
 public class DrawerLongClickListener implements OnItemLongClickListener {
 
     private HashMap<String, String> mItems;
     private TextView tv1;
     private TextView tv2;
-    private DrawerAdaptor mAdt;
+    private NaviDrawerAdaptor mAdt;
 
     public DrawerLongClickListener(HashMap<String, String> mItems,
-            DrawerAdaptor adt) {
+            NaviDrawerAdaptor adt) {
         this.mItems = mItems;
         this.mAdt = adt;
 

@@ -1,4 +1,4 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

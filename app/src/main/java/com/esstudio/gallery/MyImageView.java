@@ -1,58 +1,16 @@
 package com.esstudio.gallery;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import android.R.drawable;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DownloadManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnShowListener;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.DataSetObserver;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Region.Op;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Message;
-import android.support.v4.app.NotificationCompat;
-import android.text.InputType;
-import android.text.Layout;
-import android.text.format.Time;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.util.Calc;
+import com.esstudio.gallery.util.log;
 
 public class MyImageView extends ImageView
 {

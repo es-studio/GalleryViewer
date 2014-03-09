@@ -1,41 +1,26 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.navi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
 import com.esstudio.gallery.R;
-import android.R.anim;
-import android.app.ActionBar.LayoutParams;
+import com.esstudio.gallery.util.log;
+
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.XmlResourceParser;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.Drawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.GridView;
-import android.widget.HeaderViewListAdapter;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.ListView.FixedViewInfo;
 
-public class DrawerAdaptor extends BaseAdapter {
+public class NaviDrawerAdaptor extends BaseAdapter {
 
 	private Context context;
 	private HashMap<String, String> mItems;
 	private LayoutInflater mInflater;
 
-	public DrawerAdaptor(Context c, HashMap<String, String> items) {
+	public NaviDrawerAdaptor(Context c, HashMap<String, String> items) {
 		this.context = c;
 		this.mItems = items;
 

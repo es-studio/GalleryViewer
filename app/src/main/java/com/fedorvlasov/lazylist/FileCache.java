@@ -1,11 +1,6 @@
 package com.fedorvlasov.lazylist;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-
-import com.esstudio.gallery.AeSimpleSHA1;
 
 import android.content.Context;
 

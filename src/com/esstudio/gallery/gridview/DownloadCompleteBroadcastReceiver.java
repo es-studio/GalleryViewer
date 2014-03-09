@@ -1,4 +1,4 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.gridview;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
+
+import com.esstudio.gallery.MainActivity;
 
 /**
  * Created by EunSung on 14. 2. 19.

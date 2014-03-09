@@ -1,6 +1,8 @@
 package com.esstudio.gallery;
 
-import java.net.URL;
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.util.log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -100,14 +102,14 @@ public class WorkerLinkFinder {
 		String tmp = "";
 		Pattern p1 = Pattern.compile(
 		// "(07|08|09|10|11|12|13|14|15).?(01|02|03|04|05|06|07|08|09|10|11|12).?[0-9]{2}[^0-9]|"
-		// // ³¯Â¥ °Ë
-				"¸¶±×³Ý|ÀÚ¼®|magnet|gnet:|urn|torrent|torr|rent|±âÂ÷|Á÷Ä·|ÇÈÂ¥|Åä·À|Åä·©|Åä·»Æ®|Åä·±Æ®|Åä·»|Åä·±|"
+		// // ï¿½ï¿½Â¥ ï¿½ï¿½
+				"ï¿½ï¿½ï¿½×³ï¿½|ï¿½Ú¼ï¿½|magnet|gnet:|urn|torrent|torr|rent|ï¿½ï¿½ï¿½ï¿½|ï¿½ï¿½Ä·|ï¿½ï¿½Â¥|ï¿½ï¿½ï¿½|ï¿½ä·©|ï¿½ä·»Æ®|ï¿½ä·±Æ®|ï¿½ä·»|ï¿½ä·±|"
 						+ "flvs.daum.net|www.youtube.com|"
-						+ "½ºÆ¼Å¥ºê|²Ù·¯¹Ì|\\.avi|\\.mkv|\\.tp|\\.ts|\\.mp4|\\.flv|\\.mov|\\.wmv|\\.swf");
+						+ "ï¿½ï¿½Æ¼Å¥ï¿½ï¿½|ï¿½Ù·ï¿½ï¿½ï¿½|\\.avi|\\.mkv|\\.tp|\\.ts|\\.mp4|\\.flv|\\.mov|\\.wmv|\\.swf");
 
 		// magnet:?xt=urn:btih:
 		// Pattern p1 =
-		// Pattern.compile("¸¶±×³Ý|ÀÚ¼®|magnet|torrent|torr|rent|±âÂ÷|Á÷Ä·|ÇÈÂ¥|Åä·À|Åä·»Æ®|Åä·±Æ®|Åä·»|Åä·±|½ºÆ¼Å¥ºê|²Ù·¯¹Ì|avi|mkv|tp|ts|mp4");
+		// Pattern.compile("ï¿½ï¿½ï¿½×³ï¿½|ï¿½Ú¼ï¿½|magnet|torrent|torr|rent|ï¿½ï¿½ï¿½ï¿½|ï¿½ï¿½Ä·|ï¿½ï¿½Â¥|ï¿½ï¿½ï¿½|ï¿½ä·»Æ®|ï¿½ä·±Æ®|ï¿½ä·»|ï¿½ä·±|ï¿½ï¿½Æ¼Å¥ï¿½ï¿½|ï¿½Ù·ï¿½ï¿½ï¿½|avi|mkv|tp|ts|mp4");
 		Matcher m1 = p1.matcher(str);
 
 		StringBuffer stringBuffer = new StringBuffer();

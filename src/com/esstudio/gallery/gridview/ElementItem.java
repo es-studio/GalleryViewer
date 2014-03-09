@@ -1,4 +1,4 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.gridview;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -5,27 +5,35 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import android.R.integer;
-import android.R.string;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,43 +67,41 @@ import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.esstudio.gallery.R;
-
-import com.esstudio.gallery.R.menu;
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.gridview.ImageAdaptor;
+import com.esstudio.gallery.gridview.ImageClickListener;
+import com.esstudio.gallery.gridview.WorkerImageScrap;
+import com.esstudio.gallery.navi.NaviDrawerAdaptor;
+import com.esstudio.gallery.navi.NaviDrawerLongClickListener;
+import com.esstudio.gallery.util.Calc;
+import com.esstudio.gallery.util.NetworkUtil;
+import com.esstudio.gallery.util.log;
 import com.fedorvlasov.lazylist.ImageLoader;
-import com.fedorvlasov.lazylist.Utils;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.nostra13.universalimageloader.cache.disc.impl.TotalSizeLimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 public class MainActivity extends Activity implements
         OnSharedPreferenceChangeListener {
@@ -139,7 +145,7 @@ public class MainActivity extends Activity implements
     private ListView mNavList;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarToggle;
-    private DrawerAdaptor mNavListAdaptor;
+    private NaviDrawerAdaptor mNavListAdaptor;
 
     public ArrayList<ElementItem> mItems = new ArrayList<ElementItem>();
     public LinkedHashMap<String, String> mGalleryList = new LinkedHashMap<String, String>();
@@ -160,19 +166,13 @@ public class MainActivity extends Activity implements
                     mIndex = Integer.valueOf(value);
                     mCounter = mLimit;
                     getMaxIndex();
-
                     break;
 
                 case 1: // Next of max index
 
                     processCancel();
                     clearAll();
-                    if (!mReverseMode) {
-                        mIndex = mMaxIndex;
-                    }
-                    mCounter = mLimit;
-                    processImageScrap(mIndex);
-
+                    modeSelectDialog();
                     break;
 
                 case 2:
@@ -231,8 +231,20 @@ public class MainActivity extends Activity implements
                 // .showImageForEmptyUri(R.drawable.ic_action_search)
                 // .showImageOnFail(R.drawable.ic_action_cancel)
                 .resetViewBeforeLoading(true).cacheInMemory(true)
-                .cacheOnDisc(true).considerExifParams(true)
+                .cacheOnDisc(true).considerExifParams(false)
 //				.displayer(new FadeInBitmapDisplayer(1000))
+
+
+//                .displayer(new BitmapDisplayer() {
+//                    @Override
+//                    public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom) {
+//                        if (bitmap.getWidth() * bitmap.getHeight() > 10000) {
+//                            imageAware.setImageBitmap(bitmap);
+//                        } else {
+//                            getUnvLoader().cancelDisplayTask(imageAware);
+//                        }
+//                    }
+//                })
 
                 .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
@@ -242,10 +254,19 @@ public class MainActivity extends Activity implements
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
                 this).threadPoolSize(3).threadPriority(Thread.MIN_PRIORITY + 3)
                 .denyCacheImageMultipleSizesInMemory()
-
                         // .memoryCache(new UsingFreqLimitedCache(2000000)) // You can
                         // pass your own memory cache implementation
                 .discCache(new TotalSizeLimitedDiscCache(cacheDir, 1000000000))
+//                        .imageDecoder(new BaseImageDecoder(false){
+//
+//                            @Override
+//                            protected ImageFileInfo defineImageSizeAndRotation(InputStream imageStream, ImageDecodingInfo decodingInfo) throws IOException {
+//
+//
+//
+//                                return super.defineImageSizeAndRotation(imageStream, decodingInfo);
+//                            }
+//                        })
 //				.discCache(new UnlimitedDiscCache(cacheDir)) // You can pass
                         // your own disc
                         // cache
@@ -286,6 +307,7 @@ public class MainActivity extends Activity implements
         mScale = new ScaleGestureDetector(context,
                 new simpleOnScaleGestureListener());
 
+//        modeSelectDialog();
     }
 
 
@@ -296,7 +318,6 @@ public class MainActivity extends Activity implements
 
         File file = Settings.getDownloadDirectory(this);
         log.out(file.getPath());
-
 
 
         File[] list = file.listFiles(new FileFilter() {
@@ -349,31 +370,34 @@ public class MainActivity extends Activity implements
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // swipe shadow
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.START);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         // navi design
         mNavList.setBackgroundColor(Color.rgb(0x30, 0x35, 0x3b));
         mNavList.setAlpha(1);
         mNavList.setHeaderDividersEnabled(true);
-        mNavList.setDivider(new ColorDrawable(Color.parseColor("#282828")));
-        mNavList.setDividerHeight(2);
+//        mNavList.setDivider(new ColorDrawable(Color.parseColor("#282828")));
+        mNavList.setDividerHeight(0);
 
-        // // navi first item
-        // TextView tView = new TextView(context);
-        // tView.setText("+");
-        // tView.setGravity(Gravity.CENTER);
-        // tView.setHeight(Calc.getDP(context, 60));
-        // tView.setTextColor(Color.BLACK);
-        // tView.setTextSize(Calc.getDP(context, 8));
-        // tView.setBackgroundColor(Color.LTGRAY);
-        // mNavList.addHeaderView(tView, null, false);
+        LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View header = mInflater.inflate(R.layout.drawer_header_item, null);
+        mNavList.addHeaderView(header);
 
-        ImageView imageView = new ImageView(context);
-        imageView.setImageDrawable(getResources().getDrawable(
-                R.drawable.ic_action_important));
-        imageView.setBackgroundColor(Color.LTGRAY);
-        imageView.setMinimumHeight(Calc.getDP(context, 30));
+
+        // navi first item
+//        TextView tView = new TextView(context);
+//        tView.setText("Log");
+//        tView.setGravity(Gravity.CENTER);
+//        tView.setHeight(Calc.getDP(context, 45));
+//        tView.setTextColor(Color.BLACK);
+//        tView.setTextSize(Calc.getDP(context, 4));
+////        tView.setBackgroundColor(Color.LTGRAY);
+//        mNavList.addHeaderView(tView, null, false);
+
+//        ImageView imageView = new ImageView(context);
+//        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+//        imageView.setBackgroundColor(Color.LTGRAY);
+//        imageView.setMinimumHeight(Calc.getDP(context, 30));
 
         ToggleButton button = new ToggleButton(context);
 
@@ -386,11 +410,30 @@ public class MainActivity extends Activity implements
                                     long arg3) {
 
                 TextView tv2 = (TextView) arg1.findViewById(R.id.textView2);
-                mName = tv2.getText().toString().trim();
+                if (tv2 != null) mName = tv2.getText().toString().trim();
 
                 switch (position) {
 
                     case 0:
+
+                        showToast("Session Login Progress...");
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    HttpLogin.getInstance().mobileLogin();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }).start();
+
+
+                        break;
+
+                    case 1:
 
                         initMyGallay();
                         mDrawerLayout.closeDrawer(mNavList);
@@ -406,8 +449,9 @@ public class MainActivity extends Activity implements
                         readSettings();
                         mDrawerLayout.closeDrawer(mNavList);
 
-                        MenuItem item = (MenuItem) mMenu.findItem(R.id.itemExecute);
-                        onOptionsItemSelected(item);
+                        getMaxIndex();
+//                        MenuItem item = (MenuItem) mMenu.findItem(R.id.itemExecute);
+//                        onOptionsItemSelected(item);
                         break;
 
                 }
@@ -444,11 +488,11 @@ public class MainActivity extends Activity implements
 
         // get list
         mGalleryList = Settings.getProperties(context);
-        mNavListAdaptor = new DrawerAdaptor(context, mGalleryList);
+        mNavListAdaptor = new NaviDrawerAdaptor(context, mGalleryList);
         mNavList.setAdapter(mNavListAdaptor);
 
 
-        mNavList.setOnItemLongClickListener(new DrawerLongClickListener(
+        mNavList.setOnItemLongClickListener(new NaviDrawerLongClickListener(
                 mGalleryList, mNavListAdaptor));
 
 
@@ -470,11 +514,10 @@ public class MainActivity extends Activity implements
 
         // gridView.setPadding(pad, 0, 0, 0);
 
-        int space = 3;
+        int space = 1;
         gridView.setHorizontalSpacing(space);
-        gridView.setVerticalSpacing(space);
-        gridView.setPadding(space, 0, space, 0);
-
+        gridView.setVerticalSpacing(2 * space);
+//        gridView.setPadding(space, 0, 0, 0);
         gridView.setGravity(Gravity.CENTER);
 
         /**
@@ -805,7 +848,8 @@ public class MainActivity extends Activity implements
                                 finish();
                             }
 
-                        }).setNegativeButton("No", null).show();
+                        }
+                ).setNegativeButton("No", null).show();
     }
 
     /**
@@ -835,8 +879,9 @@ public class MainActivity extends Activity implements
         mCounter = mLimit;
 
         // vertical padding
-        float pad = 10 - mColumn * 2;
-        gridView.setVerticalSpacing((int) pad);
+//        float pad = 10 - mColumn * 2;
+//        gridView.setVerticalSpacing((int) pad);
+
 
         // position change
         gridView.setNumColumns(mColumn);
@@ -866,10 +911,6 @@ public class MainActivity extends Activity implements
 
     /**
      * Misc. Method
-     *
-     * @param title
-     * @param messagee
-     * @param value
      */
 
     public void showToast(String text) {
@@ -912,10 +953,64 @@ public class MainActivity extends Activity implements
                         // Canceled.
                         dialog.cancel();
                     }
-                }); // End of alert.setNegativeButton
+                }
+        ); // End of alert.setNegativeButton
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
 
+    }
+
+    public void modeSelectDialog() {
+        // Context context = getApplicationContext();
+
+        LayoutInflater linf = LayoutInflater.from(this);
+        final View inflator = linf.inflate(R.layout.dialog_search_method, null);
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle("Exploring Mode"); // Set Alert dialog title
+
+        final EditText editMax = (EditText) inflator.findViewById(R.id.editLatest);
+        final EditText editPrv = (EditText) inflator.findViewById(R.id.editPrev);
+        final RadioButton radioLatest = (RadioButton) inflator.findViewById(R.id.radioLatest);
+        final RadioButton radioPrev = (RadioButton) inflator.findViewById(R.id.radioPrev);
+        radioLatest.setChecked(!Settings.getReverseMode());
+        radioPrev.setChecked(Settings.getReverseMode());
+        editMax.setText(String.valueOf(mMaxIndex));
+        editPrv.setText(String.valueOf(Settings.getReverseIndex(mName)));
+
+        alert.setView(inflator);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+
+                if (radioLatest.isChecked() == true) {
+                    mReverseMode = false;
+                    mMaxIndex = Integer.valueOf(editMax.getText().toString());
+                    mIndex = mMaxIndex;
+                } else {
+                    mReverseMode = true;
+                    mIndex = Integer.valueOf(editPrv.getText().toString());
+                }
+                mCounter = mLimit;
+
+                Settings.setPrefsString(context, Settings.PREF_REVERSEMODE,
+                        Boolean.toString(mReverseMode));
+
+                showToast(mReverseMode + "");
+                processImageScrap(mIndex);
+
+            } // End of onClick(DialogInterface dialog, int whichButton)
+        }); // End of alert.setPositiveButton
+        alert.setNegativeButton("CANCEL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                        dialog.cancel();
+                    }
+                }
+        ); // End of alert.setNegativeButton
+        AlertDialog alertDialog = alert.create();
+        alertDialog.show();
     }
 
     public void showGalleryAddDialog(final String uName, final String kName) {
@@ -945,7 +1040,8 @@ public class MainActivity extends Activity implements
                         // Canceled.
                         dialog.cancel();
                     }
-                }); // End of alert.setNegativeButton
+                }
+        ); // End of alert.setNegativeButton
         AlertDialog alertDialog = alert.create();
         alertDialog.show();
 
@@ -1039,7 +1135,7 @@ public class MainActivity extends Activity implements
             mAutoScroller = new Thread(new Runnable() {
                 public void run() {
 
-                    if(mItems.size() == 0) return;
+                    if (mItems.size() == 0) return;
 
 
                     for (int i = 0; i < 100; i++) {
@@ -1079,7 +1175,7 @@ public class MainActivity extends Activity implements
             });
         }
 
-        if(onScroll) mAutoScroller.start();
+        if (onScroll) mAutoScroller.start();
 
     }
 
@@ -1167,7 +1263,8 @@ public class MainActivity extends Activity implements
                 get.addHeader(
                         "User-Agent",
                         "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) "
-                                + "AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19");
+                                + "AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19"
+                );
 
                 StringBuffer sb = new StringBuffer();
                 HttpResponse response;
@@ -1226,20 +1323,58 @@ public class MainActivity extends Activity implements
 
         new Thread(new Runnable() {
 
+
             @Override
             public void run() {
-                Document doc;
+                Document doc = null;
                 try {
-                    doc = Jsoup
-                            .connect(
-                                    "http://m.dcinside.com/list.php?id="
-                                            + mName)
-                            .userAgent(Settings.USER_AGENT).get();
 
+
+//                    doc = Jsoup
+//                            .connect(
+//                                    "http://m.dcinside.com/list.php?id=" + mName
+//                            )
+//                            .userAgent(Settings.USER_AGENT).get();
+
+                    BasicHttpContext localContext = null;
+//                        cookie();
+                    localContext = HttpLogin.getInstance().getCookie();
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    HttpClient httpClient = new DefaultHttpClient();
+                    log.out("http://m.dcinside.com/list.php?id=" + mName);
+                    HttpGet get = new HttpGet("http://m.dcinside.com/list.php?id=" + mName);
+                    get.setHeader("User-Agent", Settings.USER_AGENT);
+                    HttpResponse response = httpClient.execute(get, localContext);
+
+                    StringBuffer sb = new StringBuffer();
+                    if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                        // Set HttpGet
+                        System.out.println("ok");
+                        HttpEntity entity1 = response.getEntity();
+                        BufferedReader is = new BufferedReader(new InputStreamReader(entity1.getContent()));
+                        String line = "";
+                        while ((line = is.readLine()) != null) {
+                            sb.append(line + "\n");
+                            System.out.println(line);
+                        }
+                    }
+
+                    doc = Jsoup.parse(sb.toString());
                     log.out("Name : " + mName);
-
                     // con_substance
                     Elements el = doc.select("a.list_picture_a");
+
+                    if (el.size() == 0) {
+                        return;
+                    }
+
                     Element maxEl = el.get(0);
                     String maxUrl = maxEl.attr("href");
 
@@ -1247,7 +1382,13 @@ public class MainActivity extends Activity implements
                             maxUrl.length() - "&page=1".length());
 
                     mMaxIndex = Integer.parseInt(maxUrl);
-                } catch (IOException e) {
+
+
+                } catch (
+                        IOException e
+                        )
+
+                {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -1256,7 +1397,10 @@ public class MainActivity extends Activity implements
                 handler.sendEmptyMessage(1);
 
             }
-        }).start();
+        }
+        ).
+
+                start();
 
     }
 

@@ -4,43 +4,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import com.fedorvlasov.lazylist.ImageLoader;
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.gridview.ImageAdaptor;
+import com.esstudio.gallery.gridview.WorkerLinkFinder;
+import com.esstudio.gallery.util.log;
 
-import android.R.array;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ImageView.ScaleType;
 
 public class WorkerImageScrap extends AsyncTask<Object, String, Void> {
 

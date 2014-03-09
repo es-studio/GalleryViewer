@@ -16,29 +16,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawerView"
     android:layout_width="fill_parent"
-    android:layout_height="60dp"
-    android:weightSum="1">
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="5dp">
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="138dp"
-        android:layout_height="60dp"
-        android:paddingLeft="10dp"
-        android:text="TextView"
-        android:textSize="20dp"
-        android:textStyle="normal"
-        android:gravity="center_vertical|left"
-        android:layout_weight="0.98" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="13dp"
+        android:paddingTop="13dp"
+        android:paddingLeft="10dp">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:gravity="right|center_vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:text="TextView"
-        android:textSize="12dp"
-        android:typeface="serif" />
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="138dp"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textStyle="normal"
+            android:gravity="center_vertical|left"
+            android:layout_weight="0.98"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"
+            android:paddingLeft="15dp"
+            android:text="TextView"
+            android:textSize="12dp"
+            android:typeface="serif"
+            android:paddingRight="5dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/imageView"
+        android:background="#484f55" />
 
 </LinearLayout>

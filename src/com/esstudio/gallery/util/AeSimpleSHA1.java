@@ -1,4 +1,4 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.util;
 
 import java.io.UnsupportedEncodingException; 
 import java.security.MessageDigest; 

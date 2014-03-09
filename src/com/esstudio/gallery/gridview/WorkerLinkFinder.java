@@ -1,6 +1,8 @@
-package com.esstudio.gallery;
+package com.esstudio.gallery.gridview;
 
-import java.net.URL;
+import com.esstudio.gallery.MainActivity;
+import com.esstudio.gallery.util.log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -57,7 +59,7 @@ public class WorkerLinkFinder {
 			el.setmComment(commentEl.text());
 			el.setUrl(url);
 			el.setOnKeyword(keyword);
-			el.setImageUrl("0");
+			el.setImageUrl("");
 			el.setmTorrent(magnets);
 			el.setmYoutube(youtube);
 			el.setmMP4(mp4);

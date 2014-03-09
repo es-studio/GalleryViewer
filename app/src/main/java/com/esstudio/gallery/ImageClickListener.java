@@ -1,32 +1,24 @@
 package com.esstudio.gallery;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.zip.GZIPInputStream;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.fedorvlasov.lazylist.Utils;
+import com.esstudio.gallery.gridview.ElementItem;
+import com.esstudio.gallery.util.log;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 
-import android.R.integer;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
